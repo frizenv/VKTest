@@ -96,15 +96,17 @@
 
          function auth(callback_name_in){
            vkBridge.send('VKWebAppGetUserInfo').then(_info =>{
+             var json = JSON.stringify({key: callback_name_in, payload: _info});
              console.log(_info);
-             unityClient.SendMessage('ExternalIncomingScriptsCall', callback_name_in, JSON.stringify(_info));
+             unityClient.SendMessage('ExternalIncomingScriptsCall', ExternalIncomingCall, json);
            });
          }
 
          function getUserData(callback_name_in){
            vkBridge.send("VKWebAppStorageGet",{"keys":["_save"]}).then(data =>{
+             var json = JSON.stringify({key: callback_name_in, payload: data});
            console.log(data);
-           unityClient.SendMessage('ExternalIncomingScriptsCall', callback_name_in, JSON.stringify(data));
+           unityClient.SendMessage('ExternalIncomingScriptsCall', ExternalIncomingCall, json);
          });}
 
          function setUserData(data){
