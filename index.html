@@ -90,10 +90,16 @@
 
        <script type="text/javascript">
 
-         vkBridge.send('VKWebAppInit');
+         //vkBridge.send('VKWebAppInit');
          const UNITY_OBJECT = "ExternalIncomingScriptsCall";
          const UNITY_METHOD = "ExternalIncomingCall";
 
+
+         function appInit(){
+           vkBridge.send('VKWebAppInit').then(_info =>{
+             console.log(_info);
+           });
+         }
 
          function auth(callback_name_in){
            vkBridge.send('VKWebAppGetUserInfo').then(_info =>{
