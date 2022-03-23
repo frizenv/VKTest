@@ -90,32 +90,45 @@
 
        <script type="text/javascript">
 
-         //vkBridge.send('VKWebAppInit');
          appInit();
          const UNITY_OBJECT = "ExternalIncomingScriptsCall";
          const UNITY_METHOD = "ExternalIncomingCall";
 
 
          function appInit(){
+           console.log('Calling app init');
            vkBridge.send('VKWebAppInit').then(_info =>{
              console.log(_info);
            });
          }
 
-         function auth(callback_name_in){
-           vkBridge.send('VKWebAppGetUserInfo').then(_info =>{
-             var json = JSON.stringify({key: callback_name_in, payload: _info});
-             console.log(_info);
+         function getUserData(callback_name_in)
+         {
+           console.log('getUserData');
+           vkBridge
+           .send('VKWebAppGetUserInfo').then(data =>{
+             data = JSON.stringify(data);
+             var json = JSON.stringify({key: callback_name_in, payload: data});
+             console.log(data);
              unityClient.SendMessage(UNITY_OBJECT, UNITY_METHOD, json);
            });
          }
 
-         function getUserData(callback_name_in){
-           vkBridge.send("VKWebAppStorageGet",{"keys":["_save"]}).then(data =>{
-             var json = JSON.stringify({key: callback_name_in, payload: data});
-           console.log(data);
-           unityClient.SendMessage(UNITY_OBJECT, UNITY_METHOD, json);
-         });}
+         function getEmail(callback_name_in)
+         {
+           console.log('getEmail');
+            vkBridge
+            .send('VKWebAppGetEmail')
+            .then(data => {
+              console.log(data);
+              data = JSON.stringify(data);
+              var json = JSON.stringify({key: callback_name_in, payload: data});
+              unityClient.SendMessage(UNITY_OBJECT, UNITY_METHOD, json);
+            })
+            .catch(error => {
+              var json = JSON.stringify({key: callback_name_in, payload: error});
+            });
+         }
 
          function setUserData(data){
            console.log(data);
