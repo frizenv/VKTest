@@ -27,11 +27,11 @@
     </div>
     <script>
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/VKBuild.loader.js";
+      var loaderUrl = buildUrl + "/VK.loader.js";
       var config = {
-        dataUrl: buildUrl + "/VKBuild.data",
-        frameworkUrl: buildUrl + "/VKBuild.framework.js",
-        codeUrl: buildUrl + "/VKBuild.wasm",
+        dataUrl: buildUrl + "/VK.data",
+        frameworkUrl: buildUrl + "/VK.framework.js",
+        codeUrl: buildUrl + "/VK.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "VKSdk",
@@ -68,13 +68,11 @@
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
-      var unityClient = null;
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
-          unityClient = unityInstance;
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
@@ -85,69 +83,5 @@
       };
       document.body.appendChild(script);
     </script>
-
-    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-
-       <script type="text/javascript">
-
-         appInit();
-         const UNITY_OBJECT = "ExternalIncomingScriptsCall";
-         const UNITY_METHOD = "ExternalIncomingCall";
-
-
-         function appInit(){
-           console.log('Calling app init');
-           vkBridge.send('VKWebAppInit').then(_info =>{
-             console.log(_info);
-           });
-         }
-
-         function getUserData(callback_name_in)
-         {
-           console.log('getUserData');
-           vkBridge
-           .send('VKWebAppGetUserInfo').then(data =>{
-             data = JSON.stringify(data);
-             var json = JSON.stringify({key: callback_name_in, payload: data});
-             console.log(data);
-             unityClient.SendMessage(UNITY_OBJECT, UNITY_METHOD, json);
-           });
-         }
-
-         function getEmail(callback_name_in)
-         {
-           console.log('getEmail');
-            vkBridge
-            .send('VKWebAppGetEmail')
-            .then(data => {
-              console.log(data);
-              data = JSON.stringify(data);
-              var json = JSON.stringify({key: callback_name_in, payload: data});
-              unityClient.SendMessage(UNITY_OBJECT, UNITY_METHOD, json);
-            })
-            .catch(error => {
-              var json = JSON.stringify({key: callback_name_in, payload: error});
-            });
-         }
-
-         function setUserData(data){
-           console.log(data);
-           vkBridge.send('VKWebAppStorageSet',{"key": "_save" , "value": data}).then(_info =>{
-             console.log("Saved!")});
-         }
-
-         function showFullscrenAd(){
-           vkBridge.send('VKWebAppShowNativeAds',{ad_format:"interstitial"}).then(data => {
-             console.log(data);});
-         }
-
-         function showRewardedAd(){
-           vkBridge.send('VKWebAppShowNativeAds',{ad_format:"reward"}).then(data => {
-             console.log(data);
-             unityClient.SendMessage('VKSDK', 'RewardGetting',JSON.stringify(data.result));})
-         }
-
-
-       </script>
   </body>
 </html>
